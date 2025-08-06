@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class RoleStoreRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, mixed>
+     */
+    public function rules()
+    {
+        return [
+            'name'=>['required','string','min:3','max:50','unique:roles'],
+        ];
+    }
+    
+    public function messages()
+    {
+        return [
+            'name.string'  =>'El campo rol debe ser texto.',
+            'name.required'=>'El campo rol es requerido.',
+            'name.max'     =>'El campo rol solo acepta 50 carácteres.',
+            'unique'       =>'Este registro ya existe en la Base de Datos.',
+        ];
+    }
+}

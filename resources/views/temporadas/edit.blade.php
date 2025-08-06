@@ -1,0 +1,5 @@
+@extends('layouts.form')
+
+@section('form')
+    <x-temporadas-form table="{{ $th['table'] }}" :p="$p" />
+@endsection

@@ -1,0 +1,105 @@
+@extends('layouts.cajas')
+
+@section('panel_caja')
+<div id="appPanelCaja">
+    <div class="row mb-4">
+        <div class="col-12 text-uppercase h3">
+            Panel de cajero | Reportes de turnos
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-12">
+            <form class="form-inline" method="post" action="{{ route('cajas.turnos_reporte_search') }}">
+
+                @csrf
+                <div class="row">
+                    <div class="col-4">
+                        <label for="">Del</label>
+                        <input type="date" class="form-control" name="fecha_inicio" v-model="fecha_inicio">
+                    </div>
+                    <div class="col-4">
+                        <label for="">Al</label>
+                        <input type="date" class="form-control" name="fecha_fin" v-model="fecha_fin">
+                    </div>
+                    <div class="col-4 align-self-end">
+
+                        <button class="btn btn-outline-primary" value="{{ Crypt::encryptString(1) }}" name="accion" type="submit" :disabled="isValid()">Buscar</button>
+                        <button class="btn btn-outline-success" value="{{ Crypt::encryptString(2) }}" name="accion" type="submit" :disabled="isValid()">Generar reporte</button>
+
+                    </div>
+
+                </div>
+
+
+
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 table-responsive">
+
+            <table class="table table-striped table-inverse">
+                <thead class="thead-inverse">
+                    <tr>
+                        <th>Caja</th>
+                        <th>Turno</th>
+                        <th>Apertura</th>
+                        <th>Cierre</th>
+                        <th>Ver reporte</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($turnos as $t)
+                    <tr>
+                        <td scope="row">{{ $t->cajas->caja }}</td>
+
+                        <td scope="row">{{ $t->opcion->turno }}</td>
+                        <td>{{ $t->apertura }} · {{ $t->uapertura->name }}</td>
+
+                        <td>{{ $t->cierre ?? "Aun sigue abierto"}} {{ $t->ucierre->name ?? "" }}</td>
+                        <td>
+                            @if (!$t->estado)
+                            <a class="btn btn-outline-secondary" href="{{ route('cajas.cierre_print', ['id'=> \Crypt::encryptString($t->id)]) }}" role="button" target="_blank">PDF</a>
+                            @else
+                            <a class="btn btn-outline-secondary" href="{{ route('cajas.cierre') }}" role="button" target="_blank">Ir al cierre</a>
+                            @endif
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+<script>
+    var app = new Vue({
+        el: '#appPanelCaja'
+        , data: {
+            fecha_inicio: "{{ $fecha_inicio ?? '' }}"
+            , fecha_fin: "{{ $fecha_fin ?? '' }}"
+
+        }
+        , methods: {
+            isValid: function() {
+                let fi = this.getDate(this.fecha_inicio)
+                let ff = this.getDate(this.fecha_fin);
+                if (fi[0] && ff[0] && fi[1].getTime() <= ff[1].getTime())
+                    return false;
+                else return true;
+            }
+            , getDate: function(fecha) {
+                const date = new Date(fecha);
+                return [!isNaN(date.getTime()) && date.toISOString().slice(0, 10) === fecha, date];
+            }
+
+
+        }
+        , computed: {
+
+        }
+    });
+
+</script>
+@endsection

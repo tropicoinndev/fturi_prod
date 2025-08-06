@@ -1,0 +1,35 @@
+#Crear proceso en supervisor worker.log
+[program:worker]
+command=php /home/tropico/project/fturi/artisan queue:work --sleep=3 --tries=3
+autostart=true
+autorestart=true
+user=root
+numprocs=1
+redirect_stderr=true
+stdout_logfile=/home/tropico/project/fturi/storage/logs/worker.log
+
+#Crear proceso en supervisor websockets.conf
+[program:websockets]
+command=/usr/bin/php /home/tropico/project/fturi/artisan websockets:serve --host=192.168.3.21x
+numprocs=1
+autostart=true
+autorestart=true
+user=root
+
+sudo supervisorctl reread
+sudo supervisorctl update
+
+#Crear proceso en supervisor horizon.conf
+[program:horizon]
+process_name=horizon
+command=php /home/tropico/project/fturi/artisan horizon
+autostart=true
+autorestart=true
+user=root
+numprocs=1
+redirect_stderr=true
+stdout_logfile=/home/tropico/project/fturi/storage/logs/horizon.log
+stopwaitsecs=3600
+
+216
+/var/www/laravel/fturi/artisan

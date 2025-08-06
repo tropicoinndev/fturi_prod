@@ -1,0 +1,95 @@
+{
+    "identificacion": {
+        "version": 1,
+        "ambiente": "00",
+        "tipoDte": "01",
+        "numeroControl": "DTE-01-TROPT001-000000000000027",
+        "codigoGeneracion": "4AC95066-2F79-4057-AB61-759358058848",
+        "tipoModelo": 1,
+        "tipoOperacion": 1,
+        "tipoContingencia": null,
+        "motivoContin": null,
+        "fecEmi": "2024-06-27",
+        "horEmi": "14:59:21",
+        "tipoMoneda": "USD"
+    },
+    "documentoRelacionado": null,
+    "emisor": {
+        "nit": "12170509850014",
+        "nrc": "90670",
+        "nombre": "TURISTICAS DE ORIENTE S.A. DE C.V.",
+        "codActividad": "55102",
+        "descActividad": "HOTELES",
+        "nombreComercial": "TROPICO INN",
+        "tipoEstablecimiento": "02",
+        "direccion": {
+            "departamento": "12",
+            "municipio": "17",
+            "complemento": "7MA AV. ROOSVELT, SAN MIGUEL"
+        },
+        "telefono": "26821000",
+        "correo": "comprobantes@tropicoinn.com.sv",
+        "codEstableMH": "TROP",
+        "codEstable": null,
+        "codPuntoVentaMH": "T001",
+        "codPuntoVenta": null
+    },
+    "receptor": null,
+    "otrosDocumentos": null,
+    "ventaTercero": null,
+    "cuerpoDocumento": [
+        {
+            "numItem": 1,
+            "tipoItem": 1,
+            "numeroDocumento": null,
+            "cantidad": 2,
+            "codigo": null,
+            "codTributo": null,
+            "uniMedida": 59,
+            "descripcion": "DESAYUNO MIGUELE\u00d1O",
+            "precioUni": 4.82,
+            "montoDescu": 0,
+            "ventaNoSuj": 0,
+            "ventaExenta": 0,
+            "ventaGravada": 9.65,
+            "tributos": null,
+            "psv": 0,
+            "noGravado": 0.85,
+            "ivaItem": 1.11
+        }
+    ],
+    "resumen": {
+        "totalNoSuj": 0,
+        "totalExenta": 0,
+        "totalGravada": 9.65,
+        "subTotalVentas": 9.65,
+        "descuNoSuj": 0,
+        "descuExenta": 0,
+        "descuGravada": 0,
+        "porcentajeDescuento": 0,
+        "totalDescu": 0,
+        "tributos": null,
+        "subTotal": 9.65,
+        "ivaRete1": 0,
+        "reteRenta": 0,
+        "montoTotalOperacion": 9.65,
+        "totalNoGravado": 0.85,
+        "totalPagar": 10.5,
+        "totalLetras": "DIEZ USD CON CINCUENTA CENTAVOS",
+        "totalIva": 1.11,
+        "saldoFavor": 0,
+        "condicionOperacion": 1,
+        "pagos": [
+            {
+                "codigo": "01",
+                "montoPago": 10.5,
+                "referencia": null,
+                "plazo": null,
+                "periodo": null
+            }
+        ],
+        "numPagoElectronico": null
+    },
+    "extension": null,
+    "apendice": null
+}
