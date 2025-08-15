@@ -123,13 +123,26 @@
 
 @foreach ($comprobantes as $a)
     @php
-        $m = 1;
+        $m = 1; #Inicialización de activas
         $token = $a->tipoComprobantes->token;
         $m = $token == 7003 ? -1 : 1;
         $status = '';
         $i = $a->anulacionState;
         $nc = false;
         $nombre = '';
+        // Validación son la anulación fue recibida y procesada en el ministerio de hacienda
+        if (isset($i) && $i->response != null && json_validate($i->response)) {
+            $json = json_decode($i->response);
+            if (
+                $json &&
+                $json?->descripcionMsg === 'Invalidación Recibida y Procesada' &&
+                $json?->estado == 'PROCESADO'
+            ) {
+                $m = 0;
+            }
+        }
+
+        /* Refactorizacion de estado de anulación
         if (isset($i) && $i?->fecha != $a->fecha) {
             $nc = true;
             $m = 1;
@@ -138,7 +151,7 @@
             if (isset($json?->estado) && $json?->estado == 'PROCESADO') {
                 $m = 0;
             }
-        }
+        }*/
 
         $max = 40;
         $clName = $m == 0 ? 'ANULADO' : $a->clientes->detalle->juridico;
