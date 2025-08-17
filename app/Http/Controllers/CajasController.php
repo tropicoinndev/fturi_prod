@@ -1061,12 +1061,19 @@ class CajasController extends Controller
 
         $turnos = turnos::whereBetween('fecha', [$fecha_inicio, $fecha_fin])->where('cajas_id', $caja->id)->get();
         $todosTunos = $turnos->pluck('id');
+        $anulaciones = anulacion_comprobantes::leftJoin('comprobantes', 'anulacion_comprobantes.comprobantes_id', 'comprobantes.id')
+            ->select("anulacion_comprobantes.*")
+            ->whereIn('anulacion_comprobantes.turnos_id', $todosTunos)
+            ->where('comprobantes.eliminado', false)
+            ->get();
         $comprobantes = comprobantes::with("clientes")
             ->with("users")
             ->with("pagos")
             ->whereIn('turnos_id', $todosTunos)
-            ->where('eliminado', false)
-            ->get();
+            ->where('eliminado', false);
+        if (count($anulaciones) > 0)
+            $comprobantes = $comprobantes->orWhereIn('id', $anulaciones->pluck('comprobantes_id'));
+        $comprobantes = $comprobantes->orderBy('correlativo')->get();
 
         $anticipos = anticipos::with(['clientes', 'aplicado'])
             ->whereIn('turnos_id', $todosTunos)
@@ -1111,7 +1118,8 @@ class CajasController extends Controller
                 'fecha_inicio',
                 'fecha_fin',
                 'anticipos',
-                'abonos'
+                'abonos',
+                'anulaciones'
             )
         )
             ->setPaper('letter', 'landscape') // Tamaño carta y orientación horizontal

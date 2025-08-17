@@ -175,11 +175,23 @@
                                 <td colspan="{{ $nforma + 8 }}" class="title-table">**** {{ $turno->opcion->turno }} ·
                                     {{ $turno->fecha }} ****</td>
                             </tr>
+                            @php
+                                $anulacionesTurno = $anulaciones
+                                    ->where('turnos_id', $turno->id)
+                                    ->pluck('comprobantes_id');
+                            @endphp
                             @foreach ($tipo_comprobante as $tipo)
                                 @php
-                                    $comprobantesTipo = $comprobantes
+
+                                    $comprobantesTurnoAnulados = $comprobantes
+                                        ->whereIn('id', $anulacionesTurno)
+                                        ->where('tipo_comprobantes_id', $tipo->id);
+
+                                    $comprobantesTurnoReg = $comprobantes
                                         ->where('tipo_comprobantes_id', $tipo->id)
                                         ->where('turnos_id', $turno->id);
+
+                                    $comprobantesTipo = $comprobantesTurnoReg->merge($comprobantesTurnoAnulados);
                                 @endphp
                                 @if ($comprobantesTipo->count() > 0)
                                     <tr>
@@ -192,13 +204,54 @@
                                             $m = 1;
                                             if (!$comprobante->estado) {
                                                 $anulacion = $comprobante->anulacion[0] ?? null;
+                                                if (
+                                                    $comprobante->turnos_id !== $anulacion->turnos_id &&
+                                                    $comprobante->turnos_id === $turno->id
+                                                ) {
+                                                    $m = 1;
+                                                } elseif (
+                                                    $anulacion != null &&
+                                                    isset($anulacion->response) &&
+                                                    json_validate($anulacion->response)
+                                                ) {
+                                                    $responseAnulacion = json_decode($anulacion->response);
+
+                                                    if (
+                                                        $responseAnulacion?->estado == 'PROCESADO' &&
+                                                        $responseAnulacion?->descripcionMsg ==
+                                                            'Invalidación Recibida y Procesada'
+                                                    ) {
+                                                        if (
+                                                            $anulacion->fecha == $comprobante->fecha &&
+                                                            $comprobante->turnos_id === $anulacion->turnos_id
+                                                        ) {
+                                                            $m = 0;
+                                                        } elseif ($comprobante->turnos_id !== $anulacion->turnos_id) {
+                                                            $m = -1;
+                                                        }
+                                                    }
+                                                } elseif (
+                                                    $anulacion->fecha != $comprobante->fecha &&
+                                                    $anulacion->aceptado
+                                                ) {
+                                                    $m = 0;
+                                                    //Omitir CCF anulados con notas de créditos
+                                                    if (
+                                                        $comprobante?->tipoComprobantes?->token === 7001 &&
+                                                        $comprobante->turnos_id !== $turno->id
+                                                    ) {
+                                                        break;
+                                                    }
+                                                }
+
+                                                /* Refactorizado para el manejo de invalidaciones por turnos y NC
                                                 if ($anulacion) {
                                                     if ($anulacion->fecha == $comprobante->fecha) {
                                                         $m = 0;
                                                     } elseif ($anulacion->fecha == $turno->fecha) {
                                                         $m = -1;
                                                     }
-                                                }
+                                                }*/
                                             }
 
                                             $cliente = $m == 1 ? $comprobante->titular : 'ANULADO';
