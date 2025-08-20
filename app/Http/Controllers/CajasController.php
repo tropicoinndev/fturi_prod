@@ -846,6 +846,7 @@ class CajasController extends Controller
 
         if ($turno != null) {
             $anulaciones = anulacion_comprobantes::leftJoin('comprobantes', 'anulacion_comprobantes.comprobantes_id', 'comprobantes.id')
+                ->select("anulacion_comprobantes.*")
                 ->where('anulacion_comprobantes.turnos_id', $turno->id)
                 ->where('comprobantes.eliminado', false)
                 ->get();
