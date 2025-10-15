@@ -177,7 +177,22 @@
                                     @endif
                                 </select>
                             </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Responsable de creación del comprobante: </label>
+                                <b>({{ $p->comprobantes->users->name ?? '---' }})</b>
+                            </div>
                         </div>
+                        {{--Cambio requerido por el MH: se permitira editar la fecha y hora del evento de invalidacion--}}
+                        <div class="col-6">
+                            <label for="fechaEvento" class="form-label">Fecha evento:</label>
+                            <input type="date" class="form-control" id="fechaEvento" name="fechaEvento">
+                        </div>
+                        <div class="col-6">
+                            <label for="horaEvento" class="form-label">Hora evento:</label>
+                            <input type="time" class="form-control" id="horaEvento" name="horaEvento">
+                        </div>
+                        {{----}}
                         <div class="col-12">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="1" id="confirm"

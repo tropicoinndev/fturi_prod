@@ -26,12 +26,19 @@ class schemaAnulacion
     public $anulacionComprobantes;
     public $solicitante;
     public $responsable;
+    #---Agregados---
+    public $fechaEvento;
+    public $horaEvento;
 
-    public function __construct($id, solicitantes $solicitante, empleados $responsable, $codigoGeneracionR = null)
+    public function __construct($id, solicitantes $solicitante, empleados $responsable, $codigoGeneracionR = null, $fechaEvento, $horaEvento)
     {
         $this->solicitante = $solicitante;
         $this->responsable = $responsable;
         $this->codigoGeneracionR = trim($codigoGeneracionR);
+        #---Agregados---
+        $this->fechaEvento = $fechaEvento;
+        $this->horaEvento = $horaEvento;
+        #---
         $this->dte = dtes::find($id);
         $this->comprobante = $this->dte->comprobante;
         $this->anulacion = dte_anulaciones::where('dtes_id', $this->dte->id)->first();
@@ -62,8 +69,10 @@ class schemaAnulacion
                 "version" => self::version,
                 "ambiente" => $this->ambiente,
                 "codigoGeneracion" => $this->codigoGeneracion,
-                "fecAnula" => Carbon::parse(now())->format('Y-m-d'),
-                "horAnula" => Carbon::parse(now())->format('H:i:s'),
+                /*"fecAnula" => Carbon::parse(now())->format('Y-m-d'),Originales
+                "horAnula" => Carbon::parse(now())->format('H:i:s'),Originales*/
+                "fecAnula"=>Carbon::parse($this->fechaEvento)->format('Y-m-d'),//Agregados
+                "horAnula"=>Carbon::parse($this->horaEvento)->format('H:i:s'),//Agregados
             ];
         } catch (\Throwable $th) {
             throw new Exception("Error al generar la identificación del DTE: " . $th->getMessage());

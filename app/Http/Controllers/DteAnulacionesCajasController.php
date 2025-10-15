@@ -120,7 +120,8 @@ class DteAnulacionesCajasController extends Controller
         }
         try {
             $api = (new ApiMhController)->getAuth();
-            $schema = new schemaAnulacion($dte->id, $solicitante, $responsable, $codigoGeneracionR);
+            #$schema = new schemaAnulacion($dte->id, $solicitante, $responsable, $codigoGeneracionR);Original
+            $schema = new schemaAnulacion($dte->id, $solicitante, $responsable, $codigoGeneracionR, $r->fechaEvento, $r->horaEvento);#Agregado
 
             $error = false;
             $enviarCorreo = false;
