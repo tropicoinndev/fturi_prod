@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Role;
+use App\Events\PedidosCocina;
 
 Route::middleware('auth')->group(function () {
 
@@ -28,6 +29,28 @@ Route::middleware('auth')->group(function () {
     //*
     Route::get('register', function () {
         return 'No disponible';
+       
     });
+
+   // Route::get('pedidos_test', function(){
+        /**
+         * Para futuras pruebas de envios de notificacions a cocina cambiar 
+         * $detalleCocina con ID de destalles que esten habilitados y existan. 
+         * Esto no muestra una notificacion, esto solo hace que el socket se 
+         * actualice y la app busque cambios.
+         * Ademas sonara la notificacion por estar en broadcast publico.
+         */
+       /* $detalleCocina =[119632, 119635];
+        try {
+            echo 'Realizando pedido...';
+            //var_dump(session('caja'));
+            event(new PedidosCocina($detalleCocina, session('caja'), Auth::user()->name));
+            return 'Pedido realizado.';
+
+        } catch (\Throwable $th) {
+            throw $th;
+        }*/
+        
+   // });
     //*/
 });
