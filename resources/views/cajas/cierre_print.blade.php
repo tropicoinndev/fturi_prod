@@ -164,6 +164,7 @@
                     <tbody>
                         @foreach ($tipo_comprobante as $tipo)
                             @php
+                                $comprobantesTipo = [];
                                 $comprobantesTipo = $comprobantes->where('tipo_comprobantes_id', $tipo->id);
                             @endphp
                             @if ($comprobantesTipo->count() > 0)
@@ -176,9 +177,14 @@
                                     @php
                                         //Anulaciones
                                         $m = 1;
+                                        $anulacion = null;
+                                        $ComprobanteOculto = false;
                                         if (!$comprobante->estado) {
-                                            $anulacion = $comprobante->anulacion[0] ?? null;
+                                            if ($comprobante->anulacion->where('comprobantes_id',  $comprobante->id)->count() > 0) {
+                                                $anulacion = $comprobante->anulacion[0] ?? null;
+                                            }
                                             if (
+                                                $anulacion &&
                                                 $comprobante->turnos_id !== $anulacion->turnos_id &&
                                                 $comprobante->turnos_id === $turno->id
                                             ) {
@@ -205,17 +211,18 @@
                                                     }
                                                 }
                                             } elseif (
+                                                $anulacion &&
                                                 $anulacion->fecha != $comprobante->fecha &&
                                                 $anulacion->aceptado
                                             ) {
                                                 $m = 0;
                                                 //Omitir CCF anulados con notas de créditos
-                                                if (
+                                                $ComprobanteOculto = (
+                                                    $anulacion &&
                                                     $comprobante?->tipoComprobantes?->token === 7001 &&
                                                     $comprobante->turnos_id !== $turno->id
-                                                ) {
-                                                    break;
-                                                }
+                                                );
+                                                
                                             }
                                             /* Refactorizacion de anulaciones validadas por MH
                                             if ($anulacion) {
@@ -228,12 +235,13 @@
                                         }
 
                                         $cliente = $m == 1 ? $comprobante->titular : 'ANULADO';
-                                        $limite = 30;
+                                        $limite = 29;
                                         $cliente =
                                             strlen($cliente) > $limite
                                                 ? substr($cliente, 0, $limite) . '...'
                                                 : $cliente;
                                     @endphp
+                                    @if(!$ComprobanteOculto)
                                     <tr>
                                         <td>{{ $comprobante->correlativo }}</td>
                                         <td class="text-uppercase">
@@ -314,6 +322,7 @@
                                         $totales[$tipo->id]['percepcion'] += $comprobante->percepcion * $m;
                                         $totales[$tipo->id]['total'] += $comprobante->total * $m;
                                     @endphp
+                                    @endif
                                 @endforeach
                                 <tr class="fw-bolder bt-1">
                                     <td colspan="2" class="text-uppercase b1"><b>Totales en {{ $tipo->tipo }}</b></td>
